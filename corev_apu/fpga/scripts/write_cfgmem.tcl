@@ -34,6 +34,8 @@ if {$::env(BOARD) eq "genesys2"} {
     write_cfgmem -format mcs -interface SPIx4 -size 128  -loadbit "up 0x0 $bitfile" -file $mcsfile -force
 } elseif {$::env(BOARD) eq "nexys_video"} {
     write_cfgmem -format mcs -interface SPIx4 -size 256  -loadbit "up 0x0 $bitfile" -file $mcsfile -force
+} elseif {$::env(BOARD) eq "zcu102"} {
+    write_cfgmem -format mcs -interface qspi_x4 -size 512 -loadbit "up 0x0 $bitfile" -file $mcsfile -force
 } else {
       exit 1
 }
