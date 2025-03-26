@@ -12,14 +12,14 @@ set_property -dict {PACKAGE_PIN AH14 IOSTANDARD LVCMOS33} [get_ports {led[6]}]
 set_property -dict {PACKAGE_PIN AL12 IOSTANDARD LVCMOS33} [get_ports {led[7]}]
 
 ## SWITCHES
-set_property -dict {PACKAGE_PIN AN14 IOSTANDARD LVCMOS33 [get_ports {sw[0]}]}
-set_property -dict {PACKAGE_PIN AP14 IOSTANDARD LVCMOS33 [get_ports {sw[1]}]}
-set_property -dict {PACKAGE_PIN AM14 IOSTANDARD LVCMOS33 [get_ports {sw[2]}]}
-set_property -dict {PACKAGE_PIN AN13 IOSTANDARD LVCMOS33 [get_ports {sw[3]}]}
-set_property -dict {PACKAGE_PIN AN12 IOSTANDARD LVCMOS33 [get_ports {sw[4]}]}
-set_property -dict {PACKAGE_PIN AP12 IOSTANDARD LVCMOS33 [get_ports {sw[5]}]}
-set_property -dict {PACKAGE_PIN AL13 IOSTANDARD LVCMOS33 [get_ports {sw[6]}]}
-set_property -dict {PACKAGE_PIN AK13 IOSTANDARD LVCMOS33 [get_ports {sw[7]}]}
+set_property -dict {PACKAGE_PIN AN14 IOSTANDARD LVCMOS33} [get_ports {sw[0]}]
+set_property -dict {PACKAGE_PIN AP14 IOSTANDARD LVCMOS33} [get_ports {sw[1]}]
+set_property -dict {PACKAGE_PIN AM14 IOSTANDARD LVCMOS33} [get_ports {sw[2]}]
+set_property -dict {PACKAGE_PIN AN13 IOSTANDARD LVCMOS33} [get_ports {sw[3]}]
+set_property -dict {PACKAGE_PIN AN12 IOSTANDARD LVCMOS33} [get_ports {sw[4]}]
+set_property -dict {PACKAGE_PIN AP12 IOSTANDARD LVCMOS33} [get_ports {sw[5]}]
+set_property -dict {PACKAGE_PIN AL13 IOSTANDARD LVCMOS33} [get_ports {sw[6]}]
+set_property -dict {PACKAGE_PIN AK13 IOSTANDARD LVCMOS33} [get_ports {sw[7]}]
 
 ## PL-UART channel 2
 set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS33 [get_ports tx]}
