@@ -138,6 +138,14 @@ module ariane_xilinx (
   input  wire [7:0]    pci_exp_rxp     ,
   input  wire [7:0]    pci_exp_rxn     ,
   input  logic         trst_n          ,
+`elsif ZCU102
+  input	 wire          sys_clk_n   	   ,
+  input	 wire          sys_clk_p   	   ,
+
+  input  logic	       cpu_resetn  ,
+  output logic [ 7:0]  led	   ,
+  input  logic [ 7:0]  sw	   ,
+
 `elsif NEXYS_VIDEO
   input  logic         sys_clk_i   ,
   input  logic         cpu_resetn  ,
@@ -880,6 +888,9 @@ ariane_peripherals #(
     .InclEthernet ( 1'b0         )
     `elsif NEXYS_VIDEO
     .InclSPI      ( 1'b1         ),
+    .InclEthernet ( 1'b0         )
+    `elsif ZCU102
+    .InclSPI      ( 1'b0         ),
     .InclEthernet ( 1'b0         )
     `endif
 ) i_ariane_peripherals (

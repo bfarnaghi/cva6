@@ -1,6 +1,12 @@
 ## BUTTONS
 set_property -dict {PACKAGE_PIN AM13 IOSTANDARD LVCMOS33} [get_ports cpu_reset]
 
+
+## clock check
+create_clock -name sys_clk -period 10 [get_ports sys_clk_p]
+
+set_property -dict {PACKAGE_PIN AC9}  [get_ports sys_clk_p]
+set_property -dict {PACKAGE_PIN AC8}  [get_ports sys_clk_n]
 ## LEDs
 set_property -dict {PACKAGE_PIN AG14 IOSTANDARD LVCMOS33} [get_ports {led[0]}]
 set_property -dict {PACKAGE_PIN AF13 IOSTANDARD LVCMOS33} [get_ports {led[1]}]
@@ -22,10 +28,10 @@ set_property -dict {PACKAGE_PIN AL13 IOSTANDARD LVCMOS33} [get_ports {sw[6]}]
 set_property -dict {PACKAGE_PIN AK13 IOSTANDARD LVCMOS33} [get_ports {sw[7]}]
 
 ## PL-UART channel 2
-set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS33 [get_ports tx]}
-set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS33 [get_ports rx]}
+set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS33} [get_ports tx]
+set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS33} [get_ports rx]
 
-## No fan control needed, the fan turns on when ZCU102 is powered up.
+## No fan control needed
 
 ## ETHERNET
 set_property -dict {PACKAGE_PIN F25 IOSTANDARD LVCMOS33} [get_ports { eth_mdio }]; #MIO77_ENET_MDIO
@@ -44,10 +50,14 @@ set_property -dict {PACKAGE_PIN G25 IOSTANDARD LVCMOS33} [get_ports { eth_rxd[3]
 set_property -dict {PACKAGE_PIN D25 IOSTANDARD LVCMOS33} [get_ports { eth_rxctl}]; #MIO75_ENET_RX_CTLR
 ## reset, LED interface, check IOSTANDARD
 
-## To do: SD-SPI, PL-CLOCK, JTAG, Routing delays
+## To do: SD-SPI, PL-CLOCK, JTAG
 
 
-
+# minimize routing delay
+set_max_delay -to   [get_ports tdo ] 20
+set_max_delay -from [get_ports tms ] 20
+set_max_delay -from [get_ports tdi ] 20
+set_max_delay -from [get_ports trst ] 20
 
 set_property CFGBVS VCCO [current_design]
 set_property CONFIG_VOLTAGE 3.3 [current_design]
