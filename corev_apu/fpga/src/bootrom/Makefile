@@ -15,7 +15,7 @@ CLOCK_FREQUENCY ?= 50000000 #50MHz
 HALF_CLOCK_FREQUENCY ?= 25000000 #25MHz
 UART_BITRATE ?= 115200
 HAS_ETHERNET ?= 1
-endif
+endif # check the requirements for zcu102
 
 CC = $(RISCV)/bin/${CROSSCOMPILE}gcc
 OBJCOPY = $(RISCV)/bin/$(CROSSCOMPILE)objcopy
