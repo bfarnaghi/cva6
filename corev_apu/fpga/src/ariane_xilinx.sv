@@ -142,7 +142,7 @@ module ariane_xilinx (
   input	 wire          sys_clk_n   	   ,
   input	 wire          sys_clk_p   	   ,
 
-  input  logic	       cpu_resetn  ,
+  input  logic	       cpu_reset  ,
   output logic [ 7:0]  led	   ,
   input  logic [ 7:0]  sw	   ,
 
@@ -289,6 +289,9 @@ assign trst_n = ~trst;
 `elsif NEXYS_VIDEO
 logic cpu_reset;
 assign cpu_reset  = ~cpu_resetn;
+`elsif ZCU102
+logic cpu_resetn;
+cpu_resetn = ~cpu_reset;
 `endif
 
 logic pll_locked;
@@ -891,7 +894,8 @@ ariane_peripherals #(
     .InclEthernet ( 1'b0         )
     `elsif ZCU102
     .InclSPI      ( 1'b0         ),
-    .InclEthernet ( 1'b0         )
+    .InclEthernet ( 1'b0         ),
+    .InclTimer    ( 1'b1         )
     `endif
 ) i_ariane_peripherals (
     .clk_i        ( clk                          ),
@@ -1154,7 +1158,17 @@ xlnx_clk_gen i_xlnx_clk_gen (
   .locked   ( pll_locked      ),
   .clk_in1  ( ddr_clock_out   )  // 100MHz input clock
 );
-
+`elsif ZCU102
+xlnx_clk_gen i_xlnx_clk_gen (
+  .clk_out1 ( clk           ),        // 50 MHz
+  .clk_out2 ( phy_tx_clk    ),        // 125 MHz for Ethernet PHY (optional)
+  .clk_out3 ( eth_clk       ),        // 125 MHz quadrature
+  .clk_out4 ( sd_clk_sys    ),        // 50 MHz for SDIO
+  .reset    ( cpu_reset     ),
+  .locked   ( pll_locked    ),
+  .clk_in1  ( sys_clk_p     )         // Use differential input as reference
+);
+assign clk_200MHz_ref = clk; // if needed, fake 200MHz ref as clk for now
 `else
 
 xlnx_clk_gen i_xlnx_clk_gen (
@@ -1915,6 +1929,22 @@ axi_clock_converter_0 pcie_axi_clock_converter (
   .s_axi_rvalid   ( pcie_dwidth_axi_rvalid   ),
   .s_axi_rready   ( pcie_dwidth_axi_rready   )
 );
+`elsif ZCU102
+  // No DDR instantiation — stub memory bus
+  assign dram.aw_ready = 1'b1;
+  assign dram.w_ready  = 1'b1;
+  assign dram.b_valid  = dram.aw_valid;
+  assign dram.b_resp   = axi_pkg::RESP_SLVERR;
+  assign dram.b_id     = dram.aw_id;
+
+  assign dram.ar_ready = 1'b1;
+  assign dram.r_valid  = dram.ar_valid;
+  assign dram.r_resp   = axi_pkg::RESP_SLVERR;
+  assign dram.r_data   = 64'hDEADBEEFDEADBEEF;
+  assign dram.r_last   = 1'b1;
+  assign dram.r_id     = dram.ar_id;
+
+  assign clk_200MHz_ref = clk; // if needed
 `endif
 
 endmodule

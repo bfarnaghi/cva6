@@ -29,9 +29,8 @@ if {$::env(BOARD) eq "genesys2"} {
 } else {
       exit 1
 }
-
+# read_ip "xilinx/xlnx_mig_7_ddr3/xlnx_mig_7_ddr3.srcs/sources_1/ip/xlnx_mig_7_ddr3/xlnx_mig_7_ddr3.xci" \
 read_ip { \
-      "xilinx/xlnx_mig_7_ddr3/xlnx_mig_7_ddr3.srcs/sources_1/ip/xlnx_mig_7_ddr3/xlnx_mig_7_ddr3.xci" \
       "xilinx/xlnx_axi_clock_converter/xlnx_axi_clock_converter.srcs/sources_1/ip/xlnx_axi_clock_converter/xlnx_axi_clock_converter.xci" \
       "xilinx/xlnx_axi_dwidth_converter/xlnx_axi_dwidth_converter.srcs/sources_1/ip/xlnx_axi_dwidth_converter/xlnx_axi_dwidth_converter.xci" \
       "xilinx/xlnx_axi_dwidth_converter_dm_slave/xlnx_axi_dwidth_converter_dm_slave.srcs/sources_1/ip/xlnx_axi_dwidth_converter_dm_slave/xlnx_axi_dwidth_converter_dm_slave.xci" \
@@ -74,7 +73,7 @@ if {$::env(BOARD) eq "genesys2"} {
 } elseif {$::env(BOARD) eq "zcu102"} {
       set file "src/zcu102.svh"
       set registers "../../vendor/pulp-platform/common_cells/include/common_cells/registers.svh"
-      read_verilog -sv {src/nexys_video.svh ../../vendor/pulp-platform/common_cells/include/common_cells/registers.svh}
+      read_verilog -sv {src/zcu102.svh ../../vendor/pulp-platform/common_cells/include/common_cells/registers.svh}
 } else {
     exit 1
 }

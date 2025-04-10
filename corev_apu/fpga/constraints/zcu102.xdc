@@ -28,8 +28,8 @@ set_property -dict {PACKAGE_PIN AL13 IOSTANDARD LVCMOS33} [get_ports {sw[6]}]
 set_property -dict {PACKAGE_PIN AK13 IOSTANDARD LVCMOS33} [get_ports {sw[7]}]
 
 ## PL-UART channel 2
-set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS33} [get_ports tx]
-set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS33} [get_ports rx]
+set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS33} [get_ports {tx}]
+set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS33} [get_ports {rx}]
 
 ## No fan control needed
 
@@ -54,10 +54,10 @@ set_property -dict {PACKAGE_PIN D25 IOSTANDARD LVCMOS33} [get_ports { eth_rxctl}
 
 
 # minimize routing delay
-set_max_delay -to   [get_ports tdo ] 20
-set_max_delay -from [get_ports tms ] 20
-set_max_delay -from [get_ports tdi ] 20
-set_max_delay -from [get_ports trst ] 20
+set_max_delay -to   [get_ports {tdo} ] 20
+set_max_delay -from [get_ports {tms} ] 20
+set_max_delay -from [get_ports {tdi} ] 20
+set_max_delay -from [get_ports {trst_n} ] 20
 
-set_property CFGBVS VCCO [current_design]
-set_property CONFIG_VOLTAGE 3.3 [current_design]
+set_property -dict {CFGBVS VCCO} [current_design]
+set_property -dict {CONFIG_VOLTAGE} 3.3 [current_design]

@@ -1,0 +1,59 @@
+Makefile:52: must set CVA6_REPO_DIR to point at the root of CVA6 sources -- doing it for you...
+Makefile:157: XCELIUM_HOME not set which is necessary for compiling DPIs when using XCELIUM
+Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+[FPGA] Generate sources
+[FPGA] Generate Bitstream
+C:/ProgramData/chocolatey/lib/make/tools/install/bin/make.exe -C corev_apu/fpga BOARD=zcu102 XILINX_PART=xczu9eg-ffvb1156-2-e   XILINX_BOARD=xilinx.com:zcu102:part0:3.2   CLK_PERIOD_NS=10
+make[1]: Entering directory 'C:/Projects/CVA6/cva6/corev_apu/fpga'
+mkdir -p work-fpga
+vivado -nojournal -mode batch -source scripts/prologue.tcl -source scripts/run.tcl
+
+****** Vivado v2018.2 (64-bit)
+  **** SW Build 2258646 on Thu Jun 14 20:03:12 MDT 2018
+  **** IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
+    ** Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+source scripts/prologue.tcl
+# set project ariane
+# create_project $project . -force -part $::env(XILINX_PART)
+# set_property board_part $::env(XILINX_BOARD) [current_project]
+# set_param general.maxThreads 8
+# set_msg_config -id {[Synth 8-5858]} -new_severity "info"
+# set_msg_config -id {[Synth 8-4480]} -limit 1000
+source scripts/run.tcl
+# if {$::env(BOARD) eq "genesys2"} {
+#     add_files -fileset constrs_1 -norecurse constraints/genesys-2.xdc
+# } elseif {$::env(BOARD) eq "kc705"} {
+#       add_files -fileset constrs_1 -norecurse constraints/kc705.xdc
+# } elseif {$::env(BOARD) eq "vc707"} {
+#       add_files -fileset constrs_1 -norecurse constraints/vc707.xdc
+# } elseif {$::env(BOARD) eq "nexys_video"} {
+#       add_files -fileset constrs_1 -norecurse constraints/nexys_video.xdc
+# } elseif {$::env(BOARD) eq "zcu102"} {
+#       add_files -fileset constrs_1 -norecurse constraints/zcu102.xdc
+# } else {
+#       exit 1
+# }
+# set_property include_dirs { \
+# 	"src/axi_sd_bridge/include" \
+# 	"../../vendor/pulp-platform/common_cells/include" \
+# 	"../../vendor/pulp-platform/axi/include" \
+# 	"../../core/cache_subsystem/hpdcache/rtl/include" \
+# 	"../register_interface/include" \
+# 	"../../core/include" \
+# } [current_fileset]
+# source scripts/add_sources.tcl
+## read_vhdl {C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/apb_uart.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_clock_div.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_counter.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_edge_detect.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_fifo.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_input_filter.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_input_sync.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/slib_mv_filter.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/uart_baudgen.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/uart_interrupt.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/uart_receiver.vhd C:/Projects/CVA6/cva6/corev_apu/fpga/src/apb_uart/src/vhdl_orig/uart_transmitter.vhd}
+## read_verilog -sv {C:/Projects/CVA6/cva6/corev_apu/tb/ariane_axi_pkg.sv C:/Projects/CVA6/cva6/corev_apu/tb/axi_intf.sv C:/Projects/CVA6/cva6/corev_apu/register_interface/src/reg_intf.sv C:/Projects/CVA6/cva6/corev_apu/tb/ariane_soc_pkg.sv C:/Projects/CVA6/cva6/corev_apu/riscv-dbg/src/dm_pkg.sv C:/Projects/CVA6/cva6/corev_apu/tb/ariane_axi_soc_pkg.sv}
+## read_verilog -sv {}
+ERROR: [Common 17-69] Command failed: File '' does not exist
+
+    while executing
+"source scripts/add_sources.tcl"
+    (file "scripts/run.tcl" line 53)
+INFO: [Common 17-206] Exiting Vivado at Wed Apr  9 14:35:37 2025...
+make[1]: *** [Makefile:28: work-fpga/ariane_xilinx.bit] Error 1
+make[1]: Leaving directory 'C:/Projects/CVA6/cva6/corev_apu/fpga'
+make: *** [Makefile:799: fpga] Error 2
