@@ -5,14 +5,27 @@ work-dir := work-fpga
 bit := $(work-dir)/ariane_xilinx.bit
 mcs := $(work-dir)/ariane_xilinx.mcs
 ip-dir := xilinx
-ips := xlnx_axi_clock_converter.xci  \
-       xlnx_axi_dwidth_converter.xci \
-       xlnx_axi_dwidth_converter_dm_master.xci \
-       xlnx_axi_dwidth_converter_dm_slave.xci \
-       xlnx_axi_quad_spi.xci         \
-       xlnx_axi_gpio.xci             \
-       xlnx_clk_gen.xci              \
-       # xlnx_mig_7_ddr3.xci
+
+ifeq ($(BOARD),zcu102)
+		ips := xlnx_axi_clock_converter.xci  \
+			xlnx_axi_dwidth_converter.xci \
+			xlnx_axi_dwidth_converter_dm_master.xci \
+			xlnx_axi_dwidth_converter_dm_slave.xci \
+			xlnx_axi_quad_spi.xci         \
+			xlnx_axi_gpio.xci             \
+			xlnx_clk_gen.xci              \
+			axi_dwidth_converter_64_128 \
+			ddr4.xci
+else
+		ips := xlnx_axi_clock_converter.xci  \
+			xlnx_axi_dwidth_converter.xci \
+			xlnx_axi_dwidth_converter_dm_master.xci \
+			xlnx_axi_dwidth_converter_dm_slave.xci \
+			xlnx_axi_quad_spi.xci         \
+			xlnx_axi_gpio.xci             \
+			xlnx_clk_gen.xci              \
+			xlnx_mig_7_ddr3.xci
+endif
 
 ips := $(addprefix $(work-dir)/, $(ips))
 ips-target := $(join $(addsuffix /ip/, $(addprefix $(ip-dir)/, $(basename $(ips)))), $(ips))
@@ -32,7 +45,8 @@ $(ips): %.xci :
 	mkdir -p $(work-dir)
 	@echo Generating $(@F)
 	@cd $(ip-dir)/$(basename $(@F)) && make clean && make
-	@cp $(ip-dir)/$(basename $(@F))/$(basename $(@F)).srcs/sources_1/ip/$(basename $(@F))/$(@F) $@
+	@cp $(ip-dir)/$(basename $(@F))/$(basename $(@F)).srcs/sources_1/ip/$(basename $(@F))/$(basename $(@F)).xci $@
+
 
 mcs: $(mcs)
 

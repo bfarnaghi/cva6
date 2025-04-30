@@ -46,6 +46,8 @@ package ariane_soc;
   localparam logic[63:0] GPIOLength     = 64'h1000;
 `ifdef NEXYS_VIDEO
   localparam logic[63:0] DRAMLength     = 64'h20000000; // 512MByte of DDR on Nexys video board
+`elsif ZCU102
+  localparam logic[63:0] DRAMLength = 64'h2000_0000;  // 512MByte of DDR on ZCU102
 `else
   localparam logic[63:0] DRAMLength     = 64'h40000000; // 1GByte of DDR (split between two chips on Genesys2)
 `endif

@@ -42,5 +42,5 @@ if [ "$BOARD" = "zcu102" ]; then
   echo "ZCU102"
   export XILINX_PART="xczu9eg-ffvb1156-2-e"
   export XILINX_BOARD="xilinx.com:zcu102:part0:3.2"
-  export CLK_PERIOD_NS="10" # need to check sys_clk
+  export CLK_PERIOD_NS="20" # need to check sys_clk
 fi
