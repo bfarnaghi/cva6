@@ -432,7 +432,50 @@ module ariane_peripherals #(
             .m_axi_rvalid   ( s_axi_spi_rvalid   ),
             .m_axi_rready   ( s_axi_spi_rready   )
         );
-
+        `ifdef ZCU102
+        zynq_ultra_ps_e i_ps (
+        .saxihpc0_fpd_aclk       ( clk_i                              ),  // any clock signal (optional)
+        .saxigp0_aruser          ( 1'b0                               ),
+        .saxigp0_awuser          ( 1'b0                               ),
+        .saxigp0_awid            ( 6'b0                               ),  // if needed, assign properly
+        .saxigp0_awaddr          ( {17'b0, s_axi_spi_awaddr}          ),
+        .saxigp0_awlen           ( s_axi_spi_awlen                    ),
+        .saxigp0_awsize          ( s_axi_spi_awsize                   ),
+        .saxigp0_awburst         ( s_axi_spi_awburst                  ),
+        .saxigp0_awlock          ( s_axi_spi_awlock                   ),
+        .saxigp0_awcache         ( s_axi_spi_awcache                  ),
+        .saxigp0_awprot          ( s_axi_spi_awprot                   ),
+        .saxigp0_awvalid         ( s_axi_spi_awvalid                  ),
+        .saxigp0_awready         ( s_axi_spi_awready                  ),
+        .saxigp0_wdata           ( s_axi_spi_wdata                    ),  // zero-extend to 64-bit
+        .saxigp0_wstrb           ( {4'b0, s_axi_spi_wstrb}            ),
+        .saxigp0_wlast           ( s_axi_spi_wlast                    ),
+        .saxigp0_wvalid          ( s_axi_spi_wvalid                   ),
+        .saxigp0_wready          ( s_axi_spi_wready                   ),
+        .saxigp0_bid             (                                    ),
+        .saxigp0_bresp           ( s_axi_spi_bresp                    ),
+        .saxigp0_bvalid          ( s_axi_spi_bvalid                   ),
+        .saxigp0_bready          ( s_axi_spi_bready                   ),
+        .saxigp0_arid            ( 6'b0                               ),  // if needed, assign properly
+        .saxigp0_araddr          ( {17'b0, s_axi_spi_araddr}          ),
+        .saxigp0_arlen           ( s_axi_spi_arlen                    ),
+        .saxigp0_arsize          ( s_axi_spi_arsize                   ),
+        .saxigp0_arburst         ( s_axi_spi_arburst                  ),
+        .saxigp0_arlock          ( s_axi_spi_arlock                   ),
+        .saxigp0_arcache         ( s_axi_spi_arcache                  ),
+        .saxigp0_arprot          ( s_axi_spi_arprot                   ),
+        .saxigp0_arvalid         ( s_axi_spi_arvalid                  ),
+        .saxigp0_arready         ( s_axi_spi_arready                  ),
+        .saxigp0_rid             (                                    ),
+        .saxigp0_rdata           ( s_axi_spi_rdata                    ),
+        .saxigp0_rresp           ( s_axi_spi_rresp                    ),
+        .saxigp0_rlast           ( s_axi_spi_rlast                    ),
+        .saxigp0_rvalid          ( s_axi_spi_rvalid                   ),
+        .saxigp0_rready          ( s_axi_spi_rready                   ),
+        .saxigp0_awqos           ( s_axi_spi_awqos                    ),
+        .saxigp0_arqos           ( s_axi_spi_arqos                    )
+        );
+        `else
         xlnx_axi_quad_spi i_xlnx_axi_quad_spi (
             .ext_spi_clk    ( clk_i                  ),
             .s_axi4_aclk    ( clk_i                  ),
@@ -482,6 +525,7 @@ module ariane_peripherals #(
             .sck_t          (                        ),
             .ip2intc_irpt   ( irq_sources[1]         )
         );
+        `endif
     end else begin
         assign spi_clk_o = 1'b0;
         assign spi_mosi = 1'b0;

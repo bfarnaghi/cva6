@@ -83,11 +83,13 @@ set_max_delay -from [get_ports {tdi} ] 20
 set_max_delay -from [get_ports {trst_n} ] 20
 # accept sub-optimal placement, since tck only used in Debug
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets tck]
+set_false_path -from [get_pins i_ddr/inst/div_clk_rst_r1_reg/C]
+# set_false_path -from [get_ports trst_n]
 
-set_property -dict {CFGBVS VCCO} [current_design]
+# set_property -dict {CFGBVS VCCO} [current_design]
 set_property -dict {CONFIG_VOLTAGE 3.3} [current_design]
 ## Below pin LOC constraints are for system clock and system reset and
-
+# set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 ## memory related pins# 
 
 # set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports "c0_ddr4_dq[51]" ]

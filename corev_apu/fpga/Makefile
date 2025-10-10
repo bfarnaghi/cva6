@@ -11,11 +11,12 @@ ifeq ($(BOARD),zcu102)
 			xlnx_axi_dwidth_converter.xci \
 			xlnx_axi_dwidth_converter_dm_master.xci \
 			xlnx_axi_dwidth_converter_dm_slave.xci \
-			xlnx_axi_quad_spi.xci         \
+			zynq_ultra_ps_e.xci         \
 			xlnx_axi_gpio.xci             \
 			xlnx_clk_gen.xci              \
 			axi_dwidth_converter_64_128 \
-			ddr4.xci
+			ddr4.xci					\
+			ila.xci
 else
 		ips := xlnx_axi_clock_converter.xci  \
 			xlnx_axi_dwidth_converter.xci \
@@ -44,7 +45,7 @@ $(bit): $(ips)
 $(ips): %.xci :
 	mkdir -p $(work-dir)
 	@echo Generating $(@F)
-	@cd $(ip-dir)/$(basename $(@F)) && make clean && make
+	@cd $(ip-dir)/$(basename $(@F)) &&  make
 	@cp $(ip-dir)/$(basename $(@F))/$(basename $(@F)).srcs/sources_1/ip/$(basename $(@F))/$(basename $(@F)).xci $@
 
 
@@ -58,3 +59,5 @@ clean:
 
 .PHONY:
 	clean
+
+#make clean &&

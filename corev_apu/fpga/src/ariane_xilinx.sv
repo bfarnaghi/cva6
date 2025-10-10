@@ -161,6 +161,7 @@ module ariane_xilinx (
   output wire          c0_ddr4_act_n   ,
   output wire [0:0]    c0_ddr4_ck_c    ,
   output wire [0:0]    c0_ddr4_ck_t    ,
+  input logic          trst_n          ,
 `elsif NEXYS_VIDEO
   input  logic         sys_clk_i   ,
   input  logic         cpu_resetn  ,
@@ -909,7 +910,7 @@ ariane_peripherals #(
     .InclSPI      ( 1'b1         ),
     .InclEthernet ( 1'b0         )
     `elsif ZCU102
-    .InclSPI      ( 1'b0         ),
+    .InclSPI      ( 1'b1         ),  // handled via PS
     .InclEthernet ( 1'b0         )
     `endif
 ) i_ariane_peripherals (
@@ -944,6 +945,9 @@ ariane_peripherals #(
     `ifdef KC705
       .leds_o         ( {led[3:0], unused_led[7:4]}),
       .dip_switches_i ( {sw, unused_switches}     )
+    `elsif ZCU102
+      .leds_o         ( led[6:0]                  ),
+      .dip_switches_i ( sw                        )
     `else
       .leds_o         ( led                       ),
       .dip_switches_i ( sw                        )
@@ -1174,17 +1178,17 @@ xlnx_clk_gen i_xlnx_clk_gen (
   .clk_in1  ( ddr_clock_out   )  // 100MHz input clock
 );
 `elsif ZCU102
-wire sys_clk;
+
 xlnx_clk_gen i_xlnx_clk_gen (
   .clk_out1 ( clk           ),        // 50 MHz
   .clk_out2 ( phy_tx_clk    ),        // 125 MHz for Ethernet PHY (optional)
   .clk_out3 ( eth_clk       ),        // 125 MHz quadrature
-  .clk_out4 ( sd_clk_sys    ),        // 50 MHz for SDIO
-  .clk_out5 (sys_clk ),        // 200 MHz 
+  // .clk_out4 ( sd_clk_sys    ),        // 50 MHz for SDIO
   .reset    ( cpu_reset     ),
   .locked   ( pll_locked    ),
   .clk_in1  ( ddr_clock_out  )  
 );
+assign sd_clk_sys = clk;
 assign clk_200MHz_ref = ddr_clock_out;
 `else
 
@@ -1947,7 +1951,7 @@ axi_clock_converter_0 pcie_axi_clock_converter (
   .s_axi_rready   ( pcie_dwidth_axi_rready   )
 );
 `elsif ZCU102
-logic [31:0]  dram_dwidth_axi_awaddr;
+  logic [31:0]  dram_dwidth_axi_awaddr;
   logic [7:0]   dram_dwidth_axi_awlen;
   logic [2:0]   dram_dwidth_axi_awsize;
   logic [1:0]   dram_dwidth_axi_awburst;
@@ -1979,47 +1983,46 @@ logic [31:0]  dram_dwidth_axi_awaddr;
   logic         dram_dwidth_axi_rlast;
   logic         dram_dwidth_axi_rvalid;
   logic [1:0]   dram_dwidth_axi_rresp;
-logic [127:0] dram_dwidth_axi_rdata;
+  logic [127:0] dram_dwidth_axi_rdata;
 
 axi_dwidth_converter_64_128 i_axi_dwidth_converter_64_128 (
-        .m_axi_aclk(ddr_clock_out),
-        .m_axi_araddr(dram_dwidth_axi_araddr),
-        .m_axi_arburst(dram_dwidth_axi_arburst),
-        .m_axi_arcache(dram_dwidth_axi_arcache),
-        .m_axi_aresetn(1'b0),
-        .m_axi_arlen(dram_dwidth_axi_arlen),
-        .m_axi_arlock(dram_dwidth_axi_arlock),
-        .m_axi_arprot(dram_dwidth_axi_arprot),
-        .m_axi_arqos(dram_dwidth_axi_arqos),
-        .m_axi_arready(dram_dwidth_axi_arready),
-        .m_axi_arsize(dram_dwidth_axi_arsize),
-        .m_axi_arvalid(dram_dwidth_axi_arvalid),
-        .m_axi_awaddr(dram_dwidth_axi_awaddr),
-        .m_axi_awburst(dram_dwidth_axi_awburst),
-        .m_axi_awcache(dram_dwidth_axi_awcache),
-        .m_axi_awlen(dram_dwidth_axi_awlen),
-        .m_axi_awlock(dram_dwidth_axi_awlock),
-        .m_axi_awprot(dram_dwidth_axi_awprot),
-        .m_axi_awqos(dram_dwidth_axi_awqos),
-        .m_axi_awready(dram_dwidth_axi_awready),
-        .m_axi_awsize(dram_dwidth_axi_awsize),
-        .m_axi_awvalid(dram_dwidth_axi_awvalid),
-        .m_axi_bready(dram_dwidth_axi_bready),
-        .m_axi_bresp(dram_dwidth_axi_bresp),
-        .m_axi_bvalid(dram_dwidth_axi_bvalid),
-        .m_axi_rdata(dram_dwidth_axi_rdata),
-        .m_axi_rlast(dram_dwidth_axi_rlast),
-        .m_axi_rready(dram_dwidth_axi_rready),
-        .m_axi_rresp(dram_dwidth_axi_rresp),
-        .m_axi_rvalid(dram_dwidth_axi_rvalid),
-        .m_axi_wdata(dram_dwidth_axi_wdata),
-        .m_axi_wlast(dram_dwidth_axi_wlast),
-        .m_axi_wready(dram_dwidth_axi_wready),
-        .m_axi_wstrb(dram_dwidth_axi_wstrb),
-        .m_axi_wvalid(dram_dwidth_axi_wvalid),
-        .s_axi_aclk(ddr_clock_out),
+  .m_axi_aclk(ddr_clock_out),
+  .m_axi_araddr(dram_dwidth_axi_araddr),
+  .m_axi_arburst(dram_dwidth_axi_arburst),
+  .m_axi_arcache(dram_dwidth_axi_arcache),
+  .m_axi_aresetn(1'b0),
+  .m_axi_arlen(dram_dwidth_axi_arlen),
+  .m_axi_arlock(dram_dwidth_axi_arlock),
+  .m_axi_arprot(dram_dwidth_axi_arprot),
+  .m_axi_arqos(dram_dwidth_axi_arqos),
+  .m_axi_arready(dram_dwidth_axi_arready),
+  .m_axi_arsize(dram_dwidth_axi_arsize),
+  .m_axi_arvalid(dram_dwidth_axi_arvalid),
+  .m_axi_awaddr(dram_dwidth_axi_awaddr),
+  .m_axi_awburst(dram_dwidth_axi_awburst),
+  .m_axi_awcache(dram_dwidth_axi_awcache),
+  .m_axi_awlen(dram_dwidth_axi_awlen),
+  .m_axi_awlock(dram_dwidth_axi_awlock),
+  .m_axi_awprot(dram_dwidth_axi_awprot),
+  .m_axi_awqos(dram_dwidth_axi_awqos),
+  .m_axi_awready(dram_dwidth_axi_awready),
+  .m_axi_awsize(dram_dwidth_axi_awsize),
+  .m_axi_awvalid  (dram_dwidth_axi_awvalid),
+  .m_axi_bready   (dram_dwidth_axi_bready),
+  .m_axi_bresp    (dram_dwidth_axi_bresp),
+  .m_axi_bvalid   (dram_dwidth_axi_bvalid),
+  .m_axi_rdata    (dram_dwidth_axi_rdata),
+  .m_axi_rlast    (dram_dwidth_axi_rlast),
+  .m_axi_rready   (dram_dwidth_axi_rready),
+  .m_axi_rresp    (dram_dwidth_axi_rresp),
+  .m_axi_rvalid   (dram_dwidth_axi_rvalid),
+  .m_axi_wdata    (dram_dwidth_axi_wdata),
+  .m_axi_wlast    (dram_dwidth_axi_wlast),
+  .m_axi_wready   (dram_dwidth_axi_wready),
+  .m_axi_wstrb    (dram_dwidth_axi_wstrb),
+  .m_axi_wvalid   (dram_dwidth_axi_wvalid),
+  .s_axi_aclk     (ddr_clock_out),
   .s_axi_aresetn  ( ndmreset_n               ),
-
   .s_axi_awid     ( s_axi_awid               ),
   .s_axi_awaddr   ( s_axi_awaddr             ),
   .s_axi_awlen    ( s_axi_awlen              ),
@@ -2061,7 +2064,7 @@ axi_dwidth_converter_64_128 i_axi_dwidth_converter_64_128 (
   .s_axi_rready   ( s_axi_rready             )
   );
 ddr4 i_ddr (
-  .c0_init_calib_complete (                      ),    // output wire c0_init_calib_complete
+  .c0_init_calib_complete(),    // output wire c0_init_calib_complete
   .dbg_clk                (                      ),     // output wire dbg_clk
   .c0_sys_clk_p(c0_sys_clk_p),                        // input wire c0_sys_clk_p
   .c0_sys_clk_n(c0_sys_clk_n),                        // input wire c0_sys_clk_n
@@ -2122,6 +2125,23 @@ ddr4 i_ddr (
   .c0_ddr4_s_axi_rdata    ( dram_dwidth_axi_rdata        ),
   .sys_rst                ( cpu_reset                    )
 );
-`endif
+reg [23:0] counter = 0;
 
+always @(posedge clk or negedge ndmreset_n) begin
+  if (~ndmreset_n)
+    counter <= 0;
+  else
+    counter <= counter + 1;
+end
+
+assign led[7] = counter[23];
+ila i_ila (
+	.clk(ddr_clock_out), // input wire clk
+
+
+	.probe0(clk), // input wire [0:0]  probe0  
+	.probe1(tx), // input wire [0:0]  probe1 
+	.probe2(rst_n) // input wire [0:0]  probe2
+);
+`endif
 endmodule
