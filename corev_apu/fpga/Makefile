@@ -45,7 +45,7 @@ $(bit): $(ips)
 $(ips): %.xci :
 	mkdir -p $(work-dir)
 	@echo Generating $(@F)
-	@cd $(ip-dir)/$(basename $(@F)) &&  make
+	@cd $(ip-dir)/$(basename $(@F)) &&  make clean && make
 	@cp $(ip-dir)/$(basename $(@F))/$(basename $(@F)).srcs/sources_1/ip/$(basename $(@F))/$(basename $(@F)).xci $@
 
 

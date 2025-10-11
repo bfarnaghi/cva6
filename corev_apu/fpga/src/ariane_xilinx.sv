@@ -910,7 +910,7 @@ ariane_peripherals #(
     .InclSPI      ( 1'b1         ),
     .InclEthernet ( 1'b0         )
     `elsif ZCU102
-    .InclSPI      ( 1'b1         ),  // handled via PS
+    .InclSPI      ( 1'b0         ),  // handled via PS
     .InclEthernet ( 1'b0         )
     `endif
 ) i_ariane_peripherals (
@@ -1951,6 +1951,7 @@ axi_clock_converter_0 pcie_axi_clock_converter (
   .s_axi_rready   ( pcie_dwidth_axi_rready   )
 );
 `elsif ZCU102
+/*
   logic [31:0]  dram_dwidth_axi_awaddr;
   logic [7:0]   dram_dwidth_axi_awlen;
   logic [2:0]   dram_dwidth_axi_awsize;
@@ -2125,6 +2126,70 @@ ddr4 i_ddr (
   .c0_ddr4_s_axi_rdata    ( dram_dwidth_axi_rdata        ),
   .sys_rst                ( cpu_reset                    )
 );
+
+*/
+PS_Portion PS_Portion_i(
+  .S00_AXI_0_araddr              ( s_axi_araddr                 ),
+  .S00_AXI_0_arburst             ( s_axi_arburst                ),
+  .S00_AXI_0_arcache             ( s_axi_arcache                ), 
+  .S00_AXI_0_arid                ( s_axi_arid                   ),
+  .S00_AXI_0_arlen               ( s_axi_arlen),
+  .S00_AXI_0_arlock              ( s_axi_arlock),
+  .S00_AXI_0_arprot              ( s_axi_arprot),
+  .S00_AXI_0_arqos               ( s_axi_arqos),
+  .S00_AXI_0_arready             ( s_axi_arready),
+  .S00_AXI_0_arsize              ( s_axi_arsize),
+  .S00_AXI_0_arvalid             ( s_axi_arvalid),
+  .S00_AXI_0_awaddr              ( s_axi_awaddr),
+  .S00_AXI_0_awburst             ( s_axi_awburst),
+  .S00_AXI_0_awcache             ( s_axi_awcache),
+  .S00_AXI_0_awid                ( s_axi_awid),
+  .S00_AXI_0_awlen               ( s_axi_awlen),
+  .S00_AXI_0_awlock              ( s_axi_awlock),
+  .S00_AXI_0_awprot              ( s_axi_awprot),
+  .S00_AXI_0_awqos               ( s_axi_awqos),
+  .S00_AXI_0_awready             ( s_axi_awready),
+  .S00_AXI_0_awsize              ( s_axi_awsize),
+  .S00_AXI_0_awvalid             ( s_axi_awvalid),
+  .S00_AXI_0_bid                 ( s_axi_bid),
+  .S00_AXI_0_bready              ( s_axi_bready),
+  .S00_AXI_0_bresp               ( s_axi_bresp),
+  .S00_AXI_0_bvalid              ( s_axi_bvalid),
+  .S00_AXI_0_rdata               ( s_axi_rdata),
+  .S00_AXI_0_rid                 ( s_axi_rid),
+  .S00_AXI_0_rlast               ( s_axi_rlast),
+  .S00_AXI_0_rready              ( s_axi_rready),
+  .S00_AXI_0_rresp               ( s_axi_rresp),
+  .S00_AXI_0_rvalid              ( s_axi_rvalid),
+  .S00_AXI_0_wdata               ( s_axi_wdata),
+  .S00_AXI_0_wlast               ( s_axi_wlast),
+  .S00_AXI_0_wready              ( s_axi_wready),
+  .S00_AXI_0_wstrb               ( s_axi_wstrb),
+  .S00_AXI_0_wvalid              ( s_axi_wvalid),
+  .c0_ddr4_ui_clk_0              ( ddr_clock_out),
+  .c0_ddr4_ui_clk_sync_rst_0     ( ddr_sync_reset),
+  .c0_init_calib_complete_0      (   ),
+  .dbg_bus_0                     (               ),
+  .dbg_clk_0                     (               ), 
+  .ddr4_sdram_act_n              ( c0_ddr4_act_n),
+  .ddr4_sdram_adr                ( c0_ddr4_adr),
+  .ddr4_sdram_ba                 ( c0_ddr4_ba),
+  .ddr4_sdram_bg                 ( c0_ddr4_bg),
+  .ddr4_sdram_ck_t               ( c0_ddr4_ck_t),
+  .ddr4_sdram_ck_c               ( c0_ddr4_ck_c),
+  .ddr4_sdram_cke                ( c0_ddr4_cke),
+  .ddr4_sdram_cs_n               ( c0_ddr4_cs_n),
+  .ddr4_sdram_dm_n               ( c0_ddr4_dm_dbi_n),
+  .ddr4_sdram_dq                 ( c0_ddr4_dq),
+  .ddr4_sdram_dqs_t              ( c0_ddr4_dqs_t),
+  .ddr4_sdram_dqs_c              ( c0_ddr4_dqs_c),
+  .ddr4_sdram_odt                ( c0_ddr4_odt),
+  .ddr4_sdram_act_n              ( c0_ddr4_act_n),
+  .ddr4_sdram_reset_n            ( c0_ddr4_reset_n),
+  .sys_rst_0                     ( cpu_reset),
+  .user_si570_sysclk_clk_n       ( c0_sys_clk_n),
+  .user_si570_sysclk_clk_p       ( c0_sys_clk_p)
+  );
 reg [23:0] counter = 0;
 
 always @(posedge clk or negedge ndmreset_n) begin

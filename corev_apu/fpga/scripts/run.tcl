@@ -18,8 +18,6 @@
 
 if {$::env(BOARD) eq "genesys2"} {
     add_files -fileset constrs_1 -norecurse constraints/genesys-2.xdc
-} elseif {$::env(BOARD) eq "kc705"} {
-      add_files -fileset constrs_1 -norecurse constraints/kc705.xdc
 } elseif {$::env(BOARD) eq "vc707"} {
       add_files -fileset constrs_1 -norecurse constraints/vc707.xdc
 } elseif {$::env(BOARD) eq "nexys_video"} {
@@ -30,20 +28,60 @@ if {$::env(BOARD) eq "genesys2"} {
       exit 1
 }
 if {$::env(BOARD) eq "zcu102"} {
+	# or absolute path
+	
+
+	# PS_Portion Block Design, Rebuild from its Tcl, generate all outputs, and add its HDL wrapper
+	if {![info exists ::env(PS_PORTION_BD_TCL)]} {
+  		set ::env(PS_PORTION_BD_TCL) "/home/nightwalkerhea/Desktop/cva6/corev_apu/fpga/xilinx/PS_Portion/PS_Portion_build.tcl"
+	}
+
+	if {![file exists $::env(PS_PORTION_BD_TCL)]} {
+    puts "ERROR: Can't find PS_PORTION_BD_TCL at $::env(PS_PORTION_BD_TCL)"; exit 1
+  	}
+	set bdTcl $::env(PS_PORTION_BD_TCL)
+
+	
+	# Recreate the BD in this project
+	source $bdTcl
+	validate_bd_design
+
+	# Determine BD name/file robustly
+	set bdName [lindex [get_bd_designs] 0]
+	if {$bdName eq ""} { puts "ERROR: No BD created by $bdTcl"; exit 1 }
+	set bdFile [get_files -of_objects [get_bd_designs $bdName]]
+
+
+	# Generate all IP/BD outputs and create the wrapper HDL
+	# set bdFile [lindex [get_files -quiet *.bd] 0]
+	# if {$bdFile eq ""} { puts "ERROR: BD file not found after sourcing $bdTcl"; exit 1 }
+
+	generate_target all $bdFile
+	export_ip_user_files -of_objects $bdFile -no_script -sync -force -quiet
+
+	# Wrapper module (e.g., PS_Portion_wrapper.v). Add it to the project so your top can instantiate it
+	make_wrapper -files $bdFile -top
+	set bdWrap [lindex [glob -nocomplain *.srcs/sources_1/bd/*/hdl/*_wrapper.v] 0]
+	if {$bdWrap eq ""} { puts "ERROR: BD wrapper not found"; exit 1 }
+	add_files -norecurse $bdWrap
+
+	file mkdir reports
+	# (Optional) sanity: write an address map report
+	report_bd_address -segments -verbose -file reports/ps_portion_addr_report.txt
+	
  	read_ip { \
 		"xilinx/xlnx_axi_clock_converter/xlnx_axi_clock_converter.srcs/sources_1/ip/xlnx_axi_clock_converter/xlnx_axi_clock_converter.xci" \
 		"xilinx/xlnx_axi_dwidth_converter/xlnx_axi_dwidth_converter.srcs/sources_1/ip/xlnx_axi_dwidth_converter/xlnx_axi_dwidth_converter.xci" \
 		"xilinx/xlnx_axi_dwidth_converter_dm_slave/xlnx_axi_dwidth_converter_dm_slave.srcs/sources_1/ip/xlnx_axi_dwidth_converter_dm_slave/xlnx_axi_dwidth_converter_dm_slave.xci" \
 		"xilinx/xlnx_axi_dwidth_converter_dm_master/xlnx_axi_dwidth_converter_dm_master.srcs/sources_1/ip/xlnx_axi_dwidth_converter_dm_master/xlnx_axi_dwidth_converter_dm_master.xci" \
 		"xilinx/xlnx_axi_gpio/xlnx_axi_gpio.srcs/sources_1/ip/xlnx_axi_gpio/xlnx_axi_gpio.xci" \
-		"xilinx/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.srcs/sources_1/ip/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.xci" \
-		"xilinx/zynq_ultra_ps_e/zynq_ultra_ps_e.srcs/sources_1/ip/zynq_ultra_ps_e/zynq_ultra_ps_e.xci" \
 		"xilinx/xlnx_clk_gen/xlnx_clk_gen.srcs/sources_1/ip/xlnx_clk_gen/xlnx_clk_gen.xci" \
-		"xilinx/ddr4/ddr4.srcs/sources_1/ip/ddr4/ddr4.xci" \
 		"xilinx/ila/ila.srcs/sources_1/ip//ila/ila.xci" \
 
  	}
- 	
+#"xilinx/zynq_ultra_ps_e/zynq_ultra_ps_e.srcs/sources_1/ip/zynq_ultra_ps_e/zynq_ultra_ps_e.xci" \
+#"xilinx/ddr4/ddr4.srcs/sources_1/ip/ddr4/ddr4.xci" \
+#"xilinx/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.srcs/sources_1/ip/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.xci" \
  } else {
  	read_ip { \
 		"xilinx/xlnx_mig_7_ddr3/xlnx_mig_7_ddr3.srcs/sources_1/ip/xlnx_mig_7_ddr3/xlnx_mig_7_ddr3.xci" \
@@ -129,7 +167,7 @@ wait_on_run impl_1
 launch_runs impl_1 -to_step write_bitstream
 wait_on_run impl_1
 open_run impl_1
-
+write_hwdef -force work-fpga/${project}.hdf
 # output Verilog netlist + SDC for timing simulation
 write_verilog -force -mode funcsim work-fpga/${project}_funcsim.v
 write_verilog -force -mode timesim work-fpga/${project}_timesim.v
