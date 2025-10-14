@@ -910,7 +910,7 @@ ariane_peripherals #(
     .InclSPI      ( 1'b1         ),
     .InclEthernet ( 1'b0         )
     `elsif ZCU102
-    .InclSPI      ( 1'b1         ),  // handled via PS
+    .InclSPI      ( 1'b0         ),  // handled via PS
     .InclEthernet ( 1'b0         )
     `endif
 ) i_ariane_peripherals (

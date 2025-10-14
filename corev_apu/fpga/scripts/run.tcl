@@ -37,7 +37,6 @@ if {$::env(BOARD) eq "zcu102"} {
 		"xilinx/xlnx_axi_dwidth_converter_dm_master/xlnx_axi_dwidth_converter_dm_master.srcs/sources_1/ip/xlnx_axi_dwidth_converter_dm_master/xlnx_axi_dwidth_converter_dm_master.xci" \
 		"xilinx/xlnx_axi_gpio/xlnx_axi_gpio.srcs/sources_1/ip/xlnx_axi_gpio/xlnx_axi_gpio.xci" \
 		"xilinx/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.srcs/sources_1/ip/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.xci" \
-		"xilinx/zynq_ultra_ps_e/zynq_ultra_ps_e.srcs/sources_1/ip/zynq_ultra_ps_e/zynq_ultra_ps_e.xci" \
 		"xilinx/xlnx_clk_gen/xlnx_clk_gen.srcs/sources_1/ip/xlnx_clk_gen/xlnx_clk_gen.xci" \
 		"xilinx/ddr4/ddr4.srcs/sources_1/ip/ddr4/ddr4.xci" \
 		"xilinx/ila/ila.srcs/sources_1/ip//ila/ila.xci" \

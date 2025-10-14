@@ -11,7 +11,6 @@ ifeq ($(BOARD),zcu102)
 			xlnx_axi_dwidth_converter.xci \
 			xlnx_axi_dwidth_converter_dm_master.xci \
 			xlnx_axi_dwidth_converter_dm_slave.xci \
-			zynq_ultra_ps_e.xci         \
 			xlnx_axi_gpio.xci             \
 			xlnx_clk_gen.xci              \
 			axi_dwidth_converter_64_128 \
