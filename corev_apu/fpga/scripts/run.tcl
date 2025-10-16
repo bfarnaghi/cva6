@@ -39,7 +39,7 @@ if {$::env(BOARD) eq "zcu102"} {
 		"xilinx/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.srcs/sources_1/ip/axi_dwidth_converter_64_128/axi_dwidth_converter_64_128.xci" \
 		"xilinx/xlnx_clk_gen/xlnx_clk_gen.srcs/sources_1/ip/xlnx_clk_gen/xlnx_clk_gen.xci" \
 		"xilinx/ddr4/ddr4.srcs/sources_1/ip/ddr4/ddr4.xci" \
-		"xilinx/ila/ila.srcs/sources_1/ip//ila/ila.xci" \
+		"xilinx/xlnx_ila/xlnx_ila.srcs/sources_1/ip//xlnx_ila/xlnx_ila.xci" \
 
  	}
  	

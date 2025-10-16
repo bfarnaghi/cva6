@@ -1,5 +1,6 @@
 ## BUTTONS
-set_property -dict {PACKAGE_PIN AM13 IOSTANDARD LVCMOS33} [get_ports cpu_reset]
+set_property -dict {PACKAGE_PIN AM13 IOSTANDARD LVCMOS33} [get_ports cpu_reset] 
+#active high
 
 
 ## clock check
@@ -85,9 +86,9 @@ set_max_delay -from [get_ports {trst_n} ] 20
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets tck]
 set_false_path -from [get_pins i_ddr/inst/div_clk_rst_r1_reg/C]
 # set_false_path -from [get_ports trst_n]
-
+set_property {IOSTANDARD LVCMOS33}[get_ports {spi_clk_o, spi_mosi, spi_ss}]
 # set_property -dict {CFGBVS VCCO} [current_design]
-set_property -dict {CONFIG_VOLTAGE 3.3} [current_design]
+# set_property -dict {CONFIG_VOLTAGE 3.3} [current_design]
 ## Below pin LOC constraints are for system clock and system reset and
 # set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 ## memory related pins# 

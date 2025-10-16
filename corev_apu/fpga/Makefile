@@ -15,7 +15,7 @@ ifeq ($(BOARD),zcu102)
 			xlnx_clk_gen.xci              \
 			axi_dwidth_converter_64_128 \
 			ddr4.xci					\
-			ila.xci
+			xlnx_ila.xci
 else
 		ips := xlnx_axi_clock_converter.xci  \
 			xlnx_axi_dwidth_converter.xci \
@@ -30,11 +30,11 @@ endif
 ips := $(addprefix $(work-dir)/, $(ips))
 ips-target := $(join $(addsuffix /ip/, $(addprefix $(ip-dir)/, $(basename $(ips)))), $(ips))
 
-all: $(mcs)
+all: $(bit)
 
 # Generate mcs from bitstream
-$(mcs): $(bit)
-	$(VIVADO) $(VIVADOFLAGS) -source scripts/write_cfgmem.tcl -tclargs $@ $^
+# $(mcs): $(bit)
+#$(VIVADO) $(VIVADOFLAGS) -source scripts/write_cfgmem.tcl -tclargs $@ $^
 
 $(bit): $(ips)
 	mkdir -p $(work-dir)

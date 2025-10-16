@@ -927,21 +927,21 @@ ariane_peripherals #(
     .irq_o        ( irq                          ),
     .rx_i         ( rx                           ),
     .tx_o         ( tx                           ),
-    // .eth_txck,
-    // .eth_rxck,
-    // .eth_rxctl,
-    // .eth_rxd,
-    // .eth_rst_n,
-    // .eth_txctl,
-    // .eth_txd,
-    // .eth_mdio,
-    // .eth_mdc,
-    // .phy_tx_clk_i   ( phy_tx_clk                  ),
-    .sd_clk_i      ( sd_clk_sys                  ),
-    // .spi_clk_o,      ( spi_clk_o                   ),
-    // .spi_mosi,       ( spi_mosi                    ),
-    // .spi_miso,       ( spi_miso                    ),
-    // .spi_ss,         //( spi_ss                      ),
+  //  .eth_txck,
+  //  .eth_rxck,
+  //  .eth_rxctl,
+  //  .eth_rxd,
+  //  .eth_rst_n,
+  //  .eth_txctl,
+  //  .eth_txd,
+  //  .eth_mdio,
+  //  .eth_mdc,
+  //  .phy_tx_clk_i    ( phy_tx_clk                  ),
+  //  .sd_clk_i        ( sd_clk_sys                  ),
+  //  .spi_clk_o,      ( spi_clk_o                   ),
+  //  .spi_mosi,       ( spi_mosi                    ),
+  //  .spi_miso,       ( spi_miso                    ),
+  //  .spi_ss,         ( spi_ss                      ),
     `ifdef KC705
       .leds_o         ( {led[3:0], unused_led[7:4]}),
       .dip_switches_i ( {sw, unused_switches}     )
@@ -1183,7 +1183,7 @@ xlnx_clk_gen i_xlnx_clk_gen (
   .clk_out1 ( clk           ),        // 50 MHz
   .clk_out2 ( phy_tx_clk    ),        // 125 MHz for Ethernet PHY (optional)
   .clk_out3 ( eth_clk       ),        // 125 MHz quadrature
-  // .clk_out4 ( sd_clk_sys    ),        // 50 MHz for SDIO
+  //.clk_out4 ( sd_clk_sys    ),        // 50 MHz for SDIO
   .reset    ( cpu_reset     ),
   .locked   ( pll_locked    ),
   .clk_in1  ( ddr_clock_out  )  
@@ -2135,13 +2135,19 @@ always @(posedge clk or negedge ndmreset_n) begin
 end
 
 assign led[7] = counter[23];
-ila i_ila (
-	.clk(ddr_clock_out), // input wire clk
-
-
-	.probe0(clk), // input wire [0:0]  probe0  
-	.probe1(tx), // input wire [0:0]  probe1 
-	.probe2(rst_n) // input wire [0:0]  probe2
+xlnx_ila i_xlnx_ila (
+  .clk        ( ddr_clock_out ),           // capture on DDR clock domain
+  .probe0     ( clk            ),          // top-level system clk
+  .probe1     ( ndmreset_n     ),          // reset (active low)
+  .probe2     ( tx             ),          // UART TX activity
+  .probe3     ( rx             ),          // UART RX activity
+  .probe4     ( rom_req        ),          // ROM read requests
+  .probe5     ( rom_addr[31:0] ),          // ROM address (lower 32 bits)
+  .probe6     ( rom_rdata      ),          // ROM read data (64 bits)
+  .probe7     ( { dm_master_req,               // DM master request
+                  dm_master_we,                // DM write enable
+                  dm_master_r_valid,           // DM read valid
+                  dm_master_add[31:0] } )      // DM address (low 32)
 );
 `endif
 endmodule
