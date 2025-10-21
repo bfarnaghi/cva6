@@ -2135,19 +2135,5 @@ always @(posedge clk or negedge ndmreset_n) begin
 end
 
 assign led[7] = counter[23];
-xlnx_ila i_xlnx_ila (
-  .clk        ( ddr_clock_out ),           // capture on DDR clock domain
-  .probe0     ( clk            ),          // top-level system clk
-  .probe1     ( ndmreset_n     ),          // reset (active low)
-  .probe2     ( tx             ),          // UART TX activity
-  .probe3     ( rx             ),          // UART RX activity
-  .probe4     ( rom_req        ),          // ROM read requests
-  .probe5     ( rom_addr[31:0] ),          // ROM address (lower 32 bits)
-  .probe6     ( rom_rdata      ),          // ROM read data (64 bits)
-  .probe7     ( { dm_master_req,               // DM master request
-                  dm_master_we,                // DM write enable
-                  dm_master_r_valid,           // DM read valid
-                  dm_master_add[31:0] } )      // DM address (low 32)
-);
 `endif
 endmodule
